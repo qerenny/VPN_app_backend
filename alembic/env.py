@@ -4,6 +4,15 @@ from alembic import context
 from sqlmodel import SQLModel
 from vpn_backend.configs.env import get_environment_variables
 from sqlalchemy.engine.url import make_url
+from vpn_backend.models.user import User
+from vpn_backend.models.subscription import Subscription
+from vpn_backend.models.vpn_key import VPNKey
+from vpn_backend.models.vpn_session import VPNSession
+from vpn_backend.models.payment import Payment
+from vpn_backend.models.notification import Notification
+from vpn_backend.models.user_settings import UserSettings
+from vpn_backend.models.route_profile import RouteProfile
+from vpn_backend.models.route_rule import RouteRule
 
 env = get_environment_variables()
 

@@ -14,7 +14,8 @@ dependencies = [
     "uvicorn[standard] (>=0.34.2,<0.35.0)",
     "sqlmodel (>=0.0.24,<0.0.25)",
     "asyncpg (>=0.30.0,<0.31.0)",
-    "psycopg2-binary (>=2.9.10,<3.0.0)"
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "pydantic-settings (>=2.9.1,<3.0.0)"
 ]
 src_paths = ["src"]
 virtual_env = "env"
@@ -22,3 +23,16 @@ virtual_env = "env"
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+ruff = "^0.11.8"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+skip-string-normalization = false
+
+[tool.ruff]
+line-length = 88
+extend-select = ["I", "E", "F"]

@@ -1,7 +1,7 @@
 from functools import lru_cache
 import os
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 @lru_cache
@@ -16,11 +16,18 @@ class EnvironmentSettings(BaseSettings):
     DATABASE_PASSWORD: str
     DATABASE_PORT: int
     DATABASE_USERNAME: str
-    DATABASE_URL = f"postgresql+asyncpg://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_HOSTNAME}:{DATABASE_PORT}/{DATABASE_NAME}"
 
     class Config:
         env_file = get_env_filename()
         env_file_encoding = "utf-8"
+        
+    @property
+    def DATABASE_URL(self) -> str:
+        return (
+            f"postgresql+asyncpg://{self.DATABASE_USERNAME}:"
+            f"{self.DATABASE_PASSWORD}@{self.DATABASE_HOSTNAME}:"
+            f"{self.DATABASE_PORT}/{self.DATABASE_NAME}"
+        )
 
 
 @lru_cache
