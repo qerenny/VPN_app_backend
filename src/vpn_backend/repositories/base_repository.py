@@ -1,10 +1,9 @@
 from typing import TypeVar, Generic, Optional, Type, List
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select, SQLModel
-from fastapi import Depends
-from vpn_backend.configs.database.engine import get_db_connection
 
 T = TypeVar("T", bound=SQLModel)
+
 
 class BaseRepository(Generic[T]):
     def __init__(self, model: Type[T], session: AsyncSession):

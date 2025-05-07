@@ -11,4 +11,4 @@ class Subscription(SQLModel, table=True):
     plan_name: Optional[str] = Field(default=None, max_length=100)
     started_at: Optional[datetime] = None
     ended_at: Optional[datetime] = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())

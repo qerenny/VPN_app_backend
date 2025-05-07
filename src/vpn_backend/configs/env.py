@@ -20,7 +20,7 @@ class EnvironmentSettings(BaseSettings):
     class Config:
         env_file = get_env_filename()
         env_file_encoding = "utf-8"
-        
+
     @property
     def DATABASE_URL(self) -> str:
         return (

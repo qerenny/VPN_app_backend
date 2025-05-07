@@ -1,19 +1,13 @@
-from typing import List, Optional
-
-from fastapi import Depends
+from typing import List
+from sqlmodel.ext.asyncio.session import AsyncSession
 from vpn_backend.models.user import User
-
 from vpn_backend.repositories.user_repository import UserRepository
 from vpn_backend.schemas.user_schema import UserRegistrationSchema, UserLoginSchema
 
 
 class UserService:
-    userRepository: UserRepository
-
-    def __init__(
-        self, userRepository: UserRepository = Depends()
-    ) -> None:
-        self.userRepository = userRepository
+    def __init__(self, session: AsyncSession):
+        self.userRepository = UserRepository(session)
 
     async def registration(self, body: UserRegistrationSchema):
         return await self.userRepository.create(
@@ -29,9 +23,7 @@ class UserService:
         return await self.userRepository.get(id)
 
     async def list(self) -> List[User]:
-        users = await self.userRepository.get_all()
-        print(users)
-        return users
+        return await self.userRepository.get_all()
 
     # def delete(self, author_id: int) -> None:
     #     return self.authorRepository.delete(

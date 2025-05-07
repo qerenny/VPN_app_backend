@@ -10,5 +10,5 @@ class Notification(SQLModel, table=True):
     user_id: int = Field(foreign_key="users.id")
     title: str = Field(max_length=100)
     message: str
-    sent_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    sent_at: datetime = Field(default_factory=lambda: datetime.utcnow())
     read_at: Optional[datetime] = None

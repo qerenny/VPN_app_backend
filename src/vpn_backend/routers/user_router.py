@@ -1,44 +1,47 @@
-from typing import List, Optional
-
-from fastapi import APIRouter, Depends, status
-
-from vpn_backend.schemas.user_schema import UserRegistrationSchema, UserLoginSchema
-from vpn_backend.services.user_service import UserService
+from typing import List
+from fastapi import APIRouter, Depends
+from sqlmodel.ext.asyncio.session import AsyncSession
 from vpn_backend.configs.database.engine import get_db_connection
+from vpn_backend.services.user_service import UserService
+from vpn_backend.schemas.user_schema import UserRegistrationSchema, UserLoginSchema
+from vpn_backend.models.user import User
 
-UserRouter = APIRouter(
-    prefix="/users", tags=["user"]
-)
+UserRouter = APIRouter(prefix="/users", tags=["user"])
 
-@UserRouter.post(
-    "/registration",
-)
+
+def get_user_service(session: AsyncSession = Depends(get_db_connection)) -> UserService:
+    return UserService(session)
+
+
+@UserRouter.post("/registration")
 async def registration(
-    user: UserRegistrationSchema,
-    userService: UserService = Depends(get_db_connection),
+    body: UserRegistrationSchema,
+    service: UserService = Depends(get_user_service),
 ):
-    return await userService.registration(user)
+    return await service.registration(body)
 
 
-@UserRouter.post(
-    "/login"
-)
+@UserRouter.post("/login")
 async def login(
-    user: UserLoginSchema,
-    userService: UserService = Depends(get_db_connection),
+    body: UserLoginSchema,
+    service: UserService = Depends(get_user_service),
 ):
-    return await userService.login(user)
+    return await service.login(body)
 
 
-@UserRouter.get("/get-all")
+@UserRouter.get("/get-all", response_model=List[User])
 async def get_all(
-    userService: UserService = Depends(get_db_connection),
+    service: UserService = Depends(get_user_service),
 ):
-    return await userService.list()
+    return await service.list()
 
-@UserRouter.get("/{id}")
-async def get(id: int, userService: UserService = Depends(get_db_connection)):
-    return await userService.get(id).normalize()
+
+@UserRouter.get("/{id}", response_model=User)
+async def get_user(
+    id: int,
+    service: UserService = Depends(get_user_service),
+):
+    return await service.get(id)
 
 
 # @UserRouter.post(
