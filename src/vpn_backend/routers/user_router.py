@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 from vpn_backend.configs.database.engine import get_db_connection
 from vpn_backend.services.user_service import UserService
-from vpn_backend.schemas.user_schema import UserRegistrationSchema, UserLoginSchema
 from vpn_backend.models.user import User
+from vpn_backend.schemas.user_schema import UserRegistrationSchema, UserLoginSchema, UserUpdateSchema
+from vpn_backend.utils.auth_handler import auth_handler
 
 UserRouter = APIRouter(prefix="/users", tags=["user"])
 
@@ -36,7 +37,7 @@ async def get_all(
     return await service.list()
 
 
-@UserRouter.get("/{id}", response_model=User)
+@UserRouter.get("/get-one/{id}", response_model=User)
 async def get_user(
     id: int,
     service: UserService = Depends(get_user_service),
@@ -44,31 +45,11 @@ async def get_user(
     return await service.get(id)
 
 
-# @UserRouter.post(
-#     "/",
-#     response_model=AuthorSchema,
-#     status_code=status.HTTP_201_CREATED,
-# )
-# def create(
-#     author: AuthorPostRequestSchema,
-#     authorService: AuthorService = Depends(),
-# ):
-#     return authorService.create(author).normalize()
-#
-#
-# @UserRouter.patch("/{id}", response_model=AuthorSchema)
-# def update(
-#     id: int,
-#     author: AuthorPostRequestSchema,
-#     authorService: AuthorService = Depends(),
-# ):
-#     return authorService.update(id, author).normalize()
-#
-#
-# @UserRouter.delete(
-#     "/{id}", status_code=status.HTTP_204_NO_CONTENT
-# )
-# def delete(
-#     id: int, authorService: AuthorService = Depends()
-# ):
-#     return authorService.delete(id)
+@UserRouter.patch("/update", response_model=User)
+async def update(
+    updates: UserUpdateSchema,
+    authUserId=Depends(auth_handler.get_user),
+    service: UserService = Depends(get_user_service),
+):
+    return await service.update(updates, authUserId)
+

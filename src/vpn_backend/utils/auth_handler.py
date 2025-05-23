@@ -5,17 +5,16 @@ from passlib.context import CryptContext
 import jwt
 from starlette import status
 from sqlmodel import Session, select
-from db import engine
-from models import *
-import os
-from dotenv import load_dotenv
-load_dotenv()
+from vpn_backend.configs.database.engine import engine
+from vpn_backend.models.user import User
+from vpn_backend.configs.env import get_environment_variables
+env = get_environment_variables()
 
 
 class AuthHandler:
     security = HTTPBearer()
     pwd_context = CryptContext(schemes=['bcrypt'])
-    secret = os.getenv('LAB1_JWT_KEY')
+    secret = env.JWT_KEY
 
     def get_password_hash(self, password):
         return self.pwd_context.hash(password)

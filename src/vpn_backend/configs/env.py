@@ -16,6 +16,7 @@ class EnvironmentSettings(BaseSettings):
     DATABASE_PASSWORD: str
     DATABASE_PORT: int
     DATABASE_USERNAME: str
+    JWT_KEY: str
 
     class Config:
         env_file = get_env_filename()
