@@ -13,4 +13,4 @@ class Payment(SQLModel, table=True):
     amount: Decimal
     method: str = Field(max_length=50)
     status: str = Field(default="unpaid", max_length=20)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())

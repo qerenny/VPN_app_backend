@@ -10,4 +10,4 @@ class VPNKey(SQLModel, table=True):
     user_id: Optional[int] = Field(default=None, foreign_key="users.id")
     subscription_id: Optional[int] = Field(default=None, foreign_key="subscriptions.id")
     key_data: str = Field(description="Конфиг или ключ")
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())

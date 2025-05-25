@@ -1,11 +1,7 @@
-from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    AsyncEngine,
-    async_sessionmaker,
-    AsyncSession,
-)
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, async_sessionmaker
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel import SQLModel
 from vpn_backend.configs.env import get_environment_variables
-from contextlib import asynccontextmanager
 
 env = get_environment_variables()
 
@@ -22,7 +18,11 @@ async_session_maker = async_sessionmaker(
 )
 
 
-@asynccontextmanager
-async def get_db_connection():
+async def get_db_connection() -> AsyncSession:
     async with async_session_maker() as session:
         yield session
+
+
+async def async_init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)

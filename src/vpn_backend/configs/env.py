@@ -16,11 +16,12 @@ class EnvironmentSettings(BaseSettings):
     DATABASE_PASSWORD: str
     DATABASE_PORT: int
     DATABASE_USERNAME: str
+    JWT_KEY: str
 
     class Config:
         env_file = get_env_filename()
         env_file_encoding = "utf-8"
-        
+
     @property
     def DATABASE_URL(self) -> str:
         return (
