@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:15
+    container_name: database
+    environment:
+      POSTGRES_DB: vpn_backend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
+
+  vpn_app:
+    build:
+      context: .
+      dockerfile: ./src/vpn_backend/Dockerfile
+    container_name: vpn_app
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_HOSTNAME: "database"
+      DATABASE_NAME: "vpn_backend"
+      DATABASE_USERNAME: "postgres"
+      DATABASE_PASSWORD: "postgres"
+      DATABASE_PORT: 5432
+      JWT_KEY: "secret-key"
+    restart: always
+
+volumes:
+  db_data:
