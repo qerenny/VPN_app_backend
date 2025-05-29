@@ -30,6 +30,14 @@ async def login(
     return await service.login(body)
 
 
+@UserRouter.post("/me")
+async def me(
+    authUserId=Depends(auth_handler.get_user),
+    service: UserService = Depends(get_user_service),
+):
+    return await service.me(authUserId)
+
+
 @UserRouter.get("/get-all", response_model=List[User])
 async def get_all(
     service: UserService = Depends(get_user_service),
