@@ -31,6 +31,13 @@ class UserService:
         token = auth_handler.encode_token(user_found.id)
         return {'token': token}
 
+    async def me(self, authUserId: int):
+        user_found = await self.userRepository.get(authUserId)
+        if user_found is None:
+            raise HTTPException(status_code=400, detail='Invalid id')
+        token = auth_handler.encode_token(user_found.id)
+        return {'user': user_found, 'token': token}
+
     async def get(self, id: int) -> User:
         return await self.userRepository.get(id)
 
