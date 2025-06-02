@@ -1,7 +1,10 @@
 from datetime import datetime, timezone
 from typing import Optional
 from sqlmodel import SQLModel, Field
-
+from enum import Enum
+class UserRole(str, Enum):
+    USER = "user"
+    ADMIN = "admin"
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
@@ -15,5 +18,6 @@ class User(SQLModel, table=True):
         max_length=100, unique=True, description="Google ID (OAuth)"
     )
     telegram_id: Optional[str] = Field(max_length=50, unique=True)
+    role: UserRole = Field(default=UserRole.USER)
     username: Optional[str] = Field(max_length=100)
     created_at: datetime = Field(default_factory=lambda: datetime.utcnow())

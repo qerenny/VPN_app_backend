@@ -16,7 +16,7 @@ class UserService:
         if user_candidate is not None:
             raise HTTPException(status_code=400, detail='Email is taken')
         password_hash = auth_handler.get_password_hash(body.password)
-        user = User(email=body.email, password_hash=password_hash)
+        user = User(email=body.email, password_hash=password_hash, role=body.role)
         await self.userRepository.create(user)
         token = auth_handler.encode_token(user.id)
         return {"token": token}
@@ -45,9 +45,9 @@ class UserService:
         return await self.userRepository.get_all()
 
     async def update(
-        self, updates: UserUpdateSchema, authUserId: int,
+        self, updates: UserUpdateSchema, id: int,
     ) -> User:
-        db_user = await self.userRepository.get(authUserId)
+        db_user = await self.userRepository.get(id)
         if not db_user:
             raise HTTPException(status_code=404, detail="User not found")
         user_data = updates.model_dump(exclude_unset=True)
@@ -58,4 +58,11 @@ class UserService:
             else:
                 setattr(db_user, key, value)
         return await self.userRepository.update(db_user)
+    
+    async def delete(self, id: int) -> None:
+        db_user = await self.userRepository.get(id)
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        await self.userRepository.delete(db_user)
+        return None
 

@@ -5,6 +5,7 @@ from typing import Optional, List
 class UserRegistrationSchema(BaseModel):
     email: str
     password: str
+    role: Optional[str] = "user"
 
 
 class UserLoginSchema(BaseModel):

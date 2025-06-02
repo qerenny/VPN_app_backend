@@ -6,6 +6,7 @@ from vpn_backend.services.user_service import UserService
 from vpn_backend.models.user import User
 from vpn_backend.schemas.user_schema import UserRegistrationSchema, UserLoginSchema, UserUpdateSchema
 from vpn_backend.utils.auth_handler import auth_handler
+from vpn_backend.utils.check_ownership import check_ownership, get_admin_user
 
 UserRouter = APIRouter(prefix="/users", tags=["user"])
 
@@ -38,26 +39,37 @@ async def me(
     return await service.me(authUserId)
 
 
-@UserRouter.get("/get-all", response_model=List[User])
+@UserRouter.get("/get-all", response_model=List[User], description="Locked to admin users")
 async def get_all(
+    auth_admin_id: int = get_admin_user(),
     service: UserService = Depends(get_user_service),
 ):
     return await service.list()
 
 
-@UserRouter.get("/get-one/{id}", response_model=User)
+@UserRouter.get("/get-one/{id}", response_model=User, description="Locked to user who owns the account")
 async def get_user(
     id: int,
+    auth_user_id: int = check_ownership(model=User, get_user_field="id"),
     service: UserService = Depends(get_user_service),
 ):
     return await service.get(id)
 
 
-@UserRouter.patch("/update", response_model=User)
+@UserRouter.patch("/update", response_model=User, description="Locked to user who owns the account")
 async def update(
+    id: int,
     updates: UserUpdateSchema,
-    authUserId=Depends(auth_handler.get_user),
+    auth_user_id: int = check_ownership(model=User, get_user_field="id"),
     service: UserService = Depends(get_user_service),
 ):
-    return await service.update(updates, authUserId)
+    return await service.update(id, updates)
+
+@UserRouter.delete("/delete/{id}", description="Locked to user who owns the account")
+async def delete(
+    id: int,
+    auth_user_id: int = check_ownership(model=User, get_user_field="id"),
+    service: UserService = Depends(get_user_service),
+):
+    return await service.delete(id)
 
