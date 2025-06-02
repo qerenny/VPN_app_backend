@@ -13,6 +13,9 @@ class NotificationService:
     async def get(self, id: int) -> Notification:
         return await self.notificationRepository.get(id)
 
+    async def get_all_by_id(self, user_id: int) -> List[Notification]:
+        return await self.notificationRepository.get_all_by_id(user_id)
+
     async def list(self) -> List[Notification]:
         return await self.notificationRepository.get_all()
 

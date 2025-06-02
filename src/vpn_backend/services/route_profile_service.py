@@ -13,6 +13,9 @@ class RouteProfileService:
     async def get(self, id: int) -> RouteProfile:
         return await self.routeProfileRepository.get(id)
 
+    async def get_all_by_id(self, user_id: int) -> List[RouteProfile]:
+        return await self.routeProfileRepository.get_all_by_id(user_id)
+
     async def list(self) -> List[RouteProfile]:
         return await self.routeProfileRepository.get_all()
 

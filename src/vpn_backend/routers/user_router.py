@@ -31,7 +31,7 @@ async def login(
     return await service.login(body)
 
 
-@UserRouter.post("/me")
+@UserRouter.get("/me")
 async def me(
     authUserId=Depends(auth_handler.get_user),
     service: UserService = Depends(get_user_service),

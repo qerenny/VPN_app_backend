@@ -13,6 +13,13 @@ VPNKeyRouter = APIRouter(prefix="/vpn-keys", tags=["vpn-keys"])
 def get_vpn_key_service(session: AsyncSession = Depends(get_db_connection)) -> VPNKeyService:
     return VPNKeyService(session)
 
+@VPNKeyRouter.get("/get-by-jwt")
+async def get_by_jwt(
+    authUserId=Depends(auth_handler.get_user),
+    service: VPNKeyService = Depends(get_vpn_key_service),
+):
+    return await service.get_all_by_id(authUserId)
+
 @VPNKeyRouter.get("/get-all", response_model=List[VPNKey], description="Locked to admin users")
 async def get_all(
     auth_admin_id: int = get_admin_user(),

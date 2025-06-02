@@ -13,6 +13,13 @@ VPNSessionRouter = APIRouter(prefix="/vpn-sessions", tags=["vpn-sessions"])
 def get_vpn_session_service(session: AsyncSession = Depends(get_db_connection)) -> VPNSessionService:
     return VPNSessionService(session)
 
+@VPNSessionRouter.get("/get-by-jwt")
+async def get_by_jwt(
+    authUserId=Depends(auth_handler.get_user),
+    service: VPNSessionService = Depends(get_vpn_session_service),
+):
+    return await service.get_all_by_id(authUserId)
+
 @VPNSessionRouter.get("/get-all", response_model=List[VPNSession], description="Locked to admin users")
 async def get_all(
     auth_admin_id: int = get_admin_user(),

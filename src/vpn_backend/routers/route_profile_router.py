@@ -14,6 +14,12 @@ RouteProfileRouter = APIRouter(prefix="/route-profiles", tags=["route_profile"])
 def get_route_profile_service(session: AsyncSession = Depends(get_db_connection)) -> RouteProfileService:
     return RouteProfileService(session)
 
+@RouteProfileRouter.get("/get-by-jwt")
+async def get_by_jwt(
+    authUserId=Depends(auth_handler.get_user),
+    service: RouteProfileService = Depends(get_route_profile_service),
+):
+    return await service.get_all_by_id(authUserId)
 
 @RouteProfileRouter.get("/get-all", response_model=List[RouteProfile], description="Locked to admin users")
 async def get_all(
