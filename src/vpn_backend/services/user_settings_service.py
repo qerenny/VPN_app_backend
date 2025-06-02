@@ -13,6 +13,9 @@ class UserSettingsService:
     async def get(self, id: int) -> UserSettings:
         return await self.userSettingsRepository.get(id)
 
+    async def get_all_by_id(self, user_id: int) -> List[UserSettings]:
+        return await self.userSettingsRepository.get_all_by_id(user_id)
+
     async def list(self) -> List[UserSettings]:
         return await self.userSettingsRepository.get_all()
 

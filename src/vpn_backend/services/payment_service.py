@@ -13,6 +13,9 @@ class PaymentService:
     async def get(self, id: int) -> Payment:
         return await self.paymentRepository.get(id)
 
+    async def get_all_by_id(self, user_id: int) -> List[Payment]:
+        return await self.paymentRepository.get_all_by_id(user_id)
+
     async def list(self) -> List[Payment]:
         return await self.paymentRepository.get_all()
 

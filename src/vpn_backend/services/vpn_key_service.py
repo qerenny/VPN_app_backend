@@ -13,6 +13,9 @@ class VPNKeyService:
     async def get(self, id: int) -> VPNKey:
         return await self.vpnKeyRepository.get(id)
 
+    async def get_all_by_id(self, user_id: int) -> List[VPNKey]:
+        return await self.vpnKeyRepository.get_all_by_id(user_id)
+
     async def list(self) -> List[VPNKey]:
         return await self.vpnKeyRepository.get_all()
 

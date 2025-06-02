@@ -13,6 +13,9 @@ class SubscriptionService:
     async def get(self, id: int) -> Subscription:
         return await self.subscriptionRepository.get(id)
 
+    async def get_all_by_id(self, user_id: int) -> List[Subscription]:
+        return await self.subscriptionRepository.get_all_by_id(user_id)
+
     async def list(self) -> List[Subscription]:
         return await self.subscriptionRepository.get_all()
 

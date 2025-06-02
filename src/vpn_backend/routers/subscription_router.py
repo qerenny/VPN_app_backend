@@ -14,6 +14,12 @@ SubscriptionRouter = APIRouter(prefix="/subscriptions", tags=["subscription"])
 def get_subscription_service(session: AsyncSession = Depends(get_db_connection)) -> SubscriptionService:
     return SubscriptionService(session)
 
+@SubscriptionRouter.get("/get-by-jwt")
+async def get_by_jwt(
+    authUserId=Depends(auth_handler.get_user),
+    service: SubscriptionService = Depends(get_subscription_service),
+):
+    return await service.get_all_by_id(authUserId)
 
 @SubscriptionRouter.get("/get-all", response_model=List[Subscription], description="Locked to admin users")
 async def get_all(

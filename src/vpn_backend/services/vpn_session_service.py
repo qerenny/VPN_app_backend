@@ -13,6 +13,9 @@ class VPNSessionService:
     async def get(self, id: int) -> VPNSession:
         return await self.vpnSessionRepository.get(id)
 
+    async def get_all_by_id(self, user_id: int) -> List[VPNSession]:
+        return await self.vpnSessionRepository.get_all_by_id(user_id)
+
     async def list(self) -> List[VPNSession]:
         return await self.vpnSessionRepository.get_all()
 

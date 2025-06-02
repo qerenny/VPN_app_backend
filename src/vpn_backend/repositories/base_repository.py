@@ -18,6 +18,10 @@ class BaseRepository(Generic[T]):
         result = await self.session.exec(select(self.model))
         return result.all()
 
+    async def get_all_by_id(self, user_id: int) -> List[T]:
+        result = await self.session.exec(select(self.model).where(self.model.user_id == user_id))
+        return result.all()
+
     async def create(self, obj: T) -> T:
         self.session.add(obj)
         await self.session.commit()
